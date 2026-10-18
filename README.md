@@ -24,6 +24,61 @@ Cela ne remplace pas des essais matériels supplémentaires du wrapper public.
 **Pas de validation universelle, de certification constructeur, ni de garantie
 que cette mise à jour résolve un problème de démarrage particulier.**
 
+## Retour d'expérience : blocage au logo Lenovo avec un WD SN730
+
+Cas rapporté par **Gérard Huret, alias gg31**, le 18 octobre 2026,
+pour aider les personnes rencontrant un symptôme comparable.
+
+### Symptôme et tests croisés
+
+Sur un **ThinkCentre M920q Tiny, modèle 10RS003RFR (type 10RS), Core i5-9500T**, avec le
+BIOS `M1UKT79A`, le WD SN730 256 Go en firmware `11110101` était associé
+à un blocage au logo Lenovo : même l'accès au BIOS par **F1** ne répondait
+plus lors des essais concernés. Il ne s'agissait donc pas seulement d'un
+message d'erreur de l'amorçage de Batocera.
+
+Les observations suivantes ont orienté le diagnostic :
+
+- Le BIOS redevenait accessible une fois le WD retiré.
+- Un autre NVMe Samsung permettait à cette machine de passer ce blocage.
+- Le WD fonctionnait dans un second M920q, modèle **10RS002AFR**, équipé d'un Core i5-8500T,
+  ce qui a permis de sauvegarder son contenu puis de préparer Ubuntu
+  et la mise à jour depuis cet autre ordinateur.
+- Un problème distinct de perte d'heure et de double démarrage avait été
+  traité par remplacement de la pile CMOS ; le blocage avec le WD persistait
+  ensuite, avant sa mise à jour.
+
+### Intervention et résultat observé
+
+Après sauvegarde, le WD a reçu l'image officielle Lenovo `11170101` sous
+Ubuntu sur le second ordinateur. La version active a été relue après un
+redémarrage propre, avec l'ancien firmware conservé dans l'autre slot et
+aucune erreur média SMART signalée.
+
+Le WD a ensuite été replacé dans le M920q i5-9500T qui bloquait auparavant :
+**la machine a dépassé le logo Lenovo et démarré Ubuntu**, selon le test
+physique rapporté par Gérard. Ce démarrage ne constitue pas une validation
+du retour à Batocera : le WD contenait alors Ubuntu, et non l'installation
+Batocera d'origine.
+
+### Ce que ce cas permet — et ne permet pas — de conclure
+
+Le résultat est **compatible avec la résolution d'une interaction entre le
+firmware du SSD et le démarrage UEFI**. Mais il s'agit d'un seul exemplaire,
+pas d'un essai contrôlé isolant chaque variable : le système installé et
+d'autres éléments de configuration ont également changé durant le diagnostic.
+La cause exacte n'est donc pas démontrée.
+
+La [notice Lenovo FWNVA70](https://download.lenovo.com/pccbbs/mobiles/fwnva70.txt)
+référence `11170101` pour ce SN730, mais ne fournit pas de description précise
+des correctifs propres à la transition `11110101` vers `11170101`. Nous ne
+présentons pas ce blocage comme un défaut officiellement reconnu par Lenovo,
+ni le flash comme une solution garantie pour tous les M920q ou SN730.
+
+**Un blocage au logo ne suffit pas à justifier un flash.** Vérifier le modèle
+exact, le firmware, la sauvegarde et les autres causes matérielles avant
+toute intervention. Ne pas forcer l'installation sur une autre variante.
+
 ## Risques et limites
 
 - Un flash peut rendre un SSD inutilisable. Une coupure, un bogue ou une
@@ -42,6 +97,47 @@ que cette mise à jour résolve un problème de démarrage particulier.**
 - Aucun `--force`, aucun contournement de refus du contrôleur, aucune télémétrie.
 
 ## Prérequis et téléchargement local
+
+Récupérer le code de ce dépôt, puis se placer dans son dossier :
+
+```sh
+git clone https://github.com/eveetesla-bot/lenovo-sn730-linux-updater.git
+cd lenovo-sn730-linux-updater
+```
+
+### Firmware officiel : provenance et empreintes
+
+Il s'agit du **firmware du SSD**, pas du BIOS Lenovo `M1UKT79A`.
+Le BIOS et le firmware du SSD sont deux composants distincts ; ces scripts
+ne mettent pas à jour le BIOS.
+
+- Paquet source : [Lenovo FWNVA70, téléchargement officiel](https://download.lenovo.com/pccbbs/mobiles/fwnva70.exe).
+- Instructions et historique : [notice Lenovo FWNVA70](https://download.lenovo.com/pccbbs/mobiles/fwnva70.txt).
+- Image extraite pour ce cas : `WDC/11170101.fluf`, **2 588 672 octets**.
+- Correspondance du profil fournisseur : modèle exact `WDC PC SN730 SDBQNTY-256G-1001`, version source `11110101`, cible `11170101`.
+
+Empreintes SHA256 des fichiers testés (également contrôlées par les scripts) :
+
+```text
+fwnva70.exe
+c030171d1bb5e65b8f9b9bcd0234ba0d805f2635f6e96a5951b78064347f9a90
+
+11170101.fluf
+2dc6487beb9829a30af8c2737513139d211245e07670d2b5993f4a96d0e2b499
+
+fwwinsd.pro
+85909f5c7f1198ef9d3bc93732448f381a27f58f1fcac9b9deefdd25a62cc4fb
+```
+
+Les binaires et le profil propriétaires ne sont **pas redistribués** dans ce
+dépôt et ne relèvent pas de sa licence MIT. Le script les récupère chez Lenovo
+et les extrait localement sans modifier le firmware. Respecter les conditions
+du constructeur ; la disponibilité d'un téléchargement ne constitue pas une
+autorisation de redistribution. Si le téléchargement disparaît ou si une
+empreinte diffère, s'arrêter : ne pas remplacer les hashes pour contourner le
+contrôle et ne pas utiliser un miroir non vérifié.
+
+### Préparer les outils et extraire le paquet
 
 Python 3.10 ou plus récent, Linux, `nvme-cli`, `innoextract`, sauvegarde et accès
 administrateur. Sur Ubuntu :
