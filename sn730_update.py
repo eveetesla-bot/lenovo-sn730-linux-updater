@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Conservative, experimental SN730 update helper. Read-only by default.
 
-Shared by Gerard to help others. Not affiliated with Lenovo or Western Digital.
+Shared by Gérard Huret, alias gg31, to help others. Not affiliated with Lenovo or Western Digital.
 Never reboots, resets a live controller, changes partitions or forces an image.
 """
 import argparse

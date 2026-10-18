@@ -1,6 +1,6 @@
 # Lenovo SN730 Linux Updater
 
-**Partagé par Gérard pour rendre service à la communauté.**
+**Partagé par Gérard Huret, alias gg31, pour rendre service à la communauté.**
 
 Petit outil communautaire pour une transition précise du firmware d'un SSD
 Lenovo/Western Digital SN730 sous Linux, en gardant l'image officielle intacte.
