@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+work/
+logs/
+state/
+*.local*
+*.log
+*.fluf
+*.pro
+*.exe
+*.cab
+*.zip
+*.tar*
+*.key
+*.pem
+.env*
